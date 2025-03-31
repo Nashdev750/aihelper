@@ -31,9 +31,21 @@ app.post("/metadata/upload", upload.single("image"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
   }
-  const uri = `https://www.monkeytype.live/metadata/uploads/${req.file.filename}`
+  const uri = `https://www.monkeytype.live/metadata/file/${req.file.filename}`
   sendRequest(uri)
   res.json({ success: false });
+});
+
+
+app.get("/metadata/file/:filename", (req, res) => {
+  const filePath = path.join(__dirname, "uploads", req.params.filename);
+
+  // Check if the file exists
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({ error: "File not found" });
+  }
+
+  res.sendFile(filePath);
 });
 
 // Start the server
