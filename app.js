@@ -83,7 +83,6 @@ async function sendRequest(url) {
     }
 }
 
-sendRequest();
 
 
 
