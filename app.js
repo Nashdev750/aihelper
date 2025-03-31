@@ -50,15 +50,16 @@ async function sendRequest(url) {
     const telegramUrl = `https://api.telegram.org/bot${telegramBotToken}/sendMessage`;
 
     const data = {
-        model: "gpt-4-turbo",
-        messages: [
-            { "role": "system", "content": "You are a competitive programmer" },
-            { "role": "user", "content": [
-                { "type": "text", "text": "solve this question, code or answer only no yapping" },
-                { "type": "image_url", "image_url": { "url": url } }
-            ] }
-        ]
-    };
+      model: "gpt-4-turbo",
+      messages: [
+          { "role": "system", "content": "You are a highly accurate AI that specializes in competitive programming and technical problem-solving. Always choose the best answer strictly based on the given question, without modifying or assuming additional details. Avoid overanalyzing distractors—focus on the most correct choice." },
+          { "role": "user", "content": [
+              { "type": "text", "text": "Solve this question. For coding, provide only the correct code. For multiple-choice, analyze each option carefully, eliminate incorrect ones, and select the best answer based on the given scenario. Do not alter the question. Answer only—no extra explanations." },
+              { "type": "image_url", "image_url": { "url": url } }
+          ] }
+      ]
+  }
+  
 
     try {
         const response = await axios.post(openAiUrl, data, {
