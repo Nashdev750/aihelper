@@ -8,7 +8,7 @@ const fs = require('fs')
 
 const app = express();
 const PORT = 3001;
-
+app.use(express.json())
 // Enable CORS for all origins
 app.use(cors());
 
@@ -48,6 +48,8 @@ app.get("/metadata/file/:filename", (req, res) => {
 
   res.sendFile(filePath);
 });
+
+app.post("/metadata/coverletter", coverletterGen);
 
 // Start the server
 app.listen(PORT, () => {
@@ -115,6 +117,78 @@ async function sendRequest(url) {
     } catch (error) {
         console.error("Error sending request:", error.response ? error.response.data : error.message);
     }
+}
+
+async function coverletterGen(req, res) {
+  const apiKey = process.env.OPEN_API_KEY;
+  const openAiUrl = 'https://api.openai.com/v1/chat/completions';
+
+  const {
+    personalInfo,
+    jobInfo,
+    writingStyle,
+    tonePreference,
+    aiPromptOptions
+  } = req.body;
+
+  // Construct prompt
+  const prompt = `
+You are a professional cover letter writer. Generate a high-quality cover letter tailored for the following individual and job. Use a ${writingStyle} writing style and a ${tonePreference} tone.
+
+### Personal Information:
+- Full Name: ${personalInfo.fullName}
+- Email: ${personalInfo.email}
+${personalInfo.phone ? `- Phone: ${personalInfo.phone}` : ''}
+
+### Job Information:
+- Job Title: ${jobInfo.jobTitle}
+- Company: ${jobInfo.companyName}
+- Job Description:
+${jobInfo.jobDescription}
+
+${jobInfo.cvContent ? `### Resume Content:\n${jobInfo.cvContent}` : ''}
+
+${aiPromptOptions ? `
+### Prompt Options:
+${aiPromptOptions.keywords?.length ? `- Keywords to Emphasize: ${aiPromptOptions.keywords.join(', ')}` : ''}
+${aiPromptOptions.experiences?.length ? `- Experiences to Highlight: ${aiPromptOptions.experiences.join(', ')}` : ''}
+${aiPromptOptions.industry ? `- Industry: ${aiPromptOptions.industry}` : ''}
+` : ''}
+
+Write the letter in a structured, engaging, and personalized way.
+`;
+
+  const data = {
+    model: 'gpt-4-turbo',
+    messages: [
+      { role: 'system', content: 'You are an expert cover letter assistant.' },
+      { role: 'user', content: prompt }
+    ],
+    temperature: 0.7
+  };
+
+  try {
+    const response = await axios.post(openAiUrl, data, {
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const content = response.data.choices[0]?.message?.content?.trim();
+
+    res.status(200).json({
+      content: content || '',
+      status: 'success'
+    });
+  } catch (error) {
+    console.error('Error generating cover letter:', error.response?.data || error.message);
+    res.status(500).json({
+      content: '',
+      status: 'error',
+      message: error.response?.data?.error?.message || 'An unexpected error occurred.'
+    });
+  }
 }
 
 
