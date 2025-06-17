@@ -68,29 +68,10 @@ async function sendRequest(url) {
       model: "gpt-4-turbo",
       messages: [
           { "role": "system", "content": `
-        You are an expert in competitive programming, technical interviews, and aptitude tests. Follow these rules strictly:
-
-        1. **For Coding Problems**:
-           - Provide only the most optimized, correct code.
-           - No explanations unless explicitly asked.
-           - Use efficient algorithms (e.g., O(n log n) sorting, O(1) space tricks).
-           - Handle edge cases (empty input, large constraints).
-
-        2. **For Multiple-Choice Questions**:
-           - Analyze all options logically.
-           - Eliminate wrong choices first.
-           - Provide the correct answer.
-
-        3. **For Math/Logic Puzzles**:
-           - Solve step-by-step, showing minimal but clear reasoning.
-           - Give the exact answer (no approximations unless specified).
-
-        4. **For System Design**:
-           - Focus on scalability, trade-offs, and key components.
-           - Use bullet points for clarity.
+        You are an expert in competitive programming, technical interviews, and aptitude tests. ANSWER ALL QUESTIONS WITH HIGH ACCURACY.
       ` },
           { "role": "user", "content": [
-              { "type": "text", "text": "Solve this question. For coding, provide only the correct code. For multiple-choice, analyze options and pick the best one. For math/logic, derive the answer step-by-step." },
+              { "type": "text", "text": "Solve this question. For coding, provide only the correct code(use python and on top include comments on steps/plan for your solution). For multiple-choice, analyze options and pick the best one. For math/logic, derive the answer step-by-step." },
               { "type": "image_url", "image_url": { "url": url } }
           ] }
       ]
