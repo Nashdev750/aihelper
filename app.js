@@ -67,11 +67,10 @@ async function sendRequest(url) {
     const data = {
       model: "gpt-4-turbo",
       messages: [
-          { "role": "system", "content": `
-        You are an expert in competitive programming, technical interviews, and aptitude tests. ANSWER ALL QUESTIONS WITH HIGH ACCURACY.
+          { "role": "system", "content": `ANSWER ALL QUESTIONS WITH HIGH ACCURACY.
       ` },
           { "role": "user", "content": [
-              { "type": "text", "text": "Solve this question. For coding, provide only the correct code(use python and on top include comments on steps/plan for your solution). For multiple-choice, analyze options and pick the best one. For math/logic, derive the answer step-by-step." },
+              { "type": "text", "text": "Solve the question presented on the image" },
               { "type": "image_url", "image_url": { "url": url } }
           ] }
       ]
