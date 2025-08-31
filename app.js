@@ -13,7 +13,7 @@ app.use(express.json())
 app.use(cors());
 
 // Serve static files from "uploads" folder
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/api/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Configure Multer for file storage
 const storage = multer.diskStorage({
@@ -28,7 +28,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Route to upload an image
-app.post("/metadata/upload", upload.single("image"), (req, res) => {
+app.post("/api/metadata/upload", upload.single("image"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
   }
@@ -38,7 +38,7 @@ app.post("/metadata/upload", upload.single("image"), (req, res) => {
 });
 
 
-app.get("/metadata/file/:filename", (req, res) => {
+app.get("/api/metadata/file/:filename", (req, res) => {
   const filePath = path.join(__dirname, "uploads", req.params.filename);
 
   // Check if the file exists
@@ -49,7 +49,7 @@ app.get("/metadata/file/:filename", (req, res) => {
   res.sendFile(filePath);
 });
 
-app.post("/metadata/coverletter", coverletterGen);
+app.post("/api/metadata/coverletter", coverletterGen);
 
 // Start the server
 app.listen(PORT, () => {
