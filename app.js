@@ -68,6 +68,39 @@ async function sendRequest(url) {
       model: "gpt-4-turbo",
       messages: [
           { "role": "system", "content": `ANSWER ALL QUESTIONS WITH HIGH ACCURACY.
+                      here are some intructions for answering video annotation question
+                      Play the entire video once before starting.
+                      Identify the overall task objective and its key subtasks.
+
+
+                      Write the Intent Caption
+                      One concise sentence (≤25 words) in second-person imperative, using the present tense (e.g., “Pick up the red cup and place it on the shelf”). 
+                      Mention the objects, how many, their relevant and distinguishing features (color, shape, etc), starting locations.
+                      If the robot returns to the final resting position, do mention in the intent
+                      Stay neutral, descriptive, and in present tense.
+                      If the intent is clear but the robot fails (e.g., drops the cup), still write the intended task.
+                      Avoid period in the end (full stop)
+
+
+                      List the Subtasks Summary
+                      Break the task into atomic subtasks in order and list them as bullet points with hyphens - in each line.
+                      Each line must be in first-person, from the robot's perspective (“I will reach…”) and ≤15 words.
+                      Be explicit about spatial details (left/right arm, move up/down, color of object). Use the camera’s perspective for the spatial details, NOT the robot operator’s perspective.
+                      Cover the entire video sequence without skipping steps.
+                      Do not include mistakes observed in the video in the subtask list.
+
+
+                      Write the Final Summary
+                      In first-person (Robot perspective), describe what happened in the video. e.g. ("I reached for the cup, grasped it...")
+                      Note if the task was completed or not.
+                      Mention any mistakes or suboptimal actions (jerky motion, pauses, unnecessary slowness).
+                      If nothing unusual, simply restate the intent in first-person.
+
+
+                      Choose an Outcome
+                      Select an Outcome of this video based on the intent.
+                      Explain briefly but descriptively why you chose this outcome (e.g., “Robot lifted the cup but dropped it halfway, so the task was only partially completed”). 
+
       ` },
           { "role": "user", "content": [
               { "type": "text", "text": "Solve the question presented on the image" },
