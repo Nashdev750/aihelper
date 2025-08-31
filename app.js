@@ -32,7 +32,7 @@ app.post("/api/metadata/upload", upload.single("image"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
   }
-  const uri = `https://www.monkeytype.live/metadata/file/${req.file.filename}`
+  const uri = `https://www.monkeytype.live/api/metadata/file/${req.file.filename}`
   sendRequest(uri)
   res.json({ success: false });
 });
