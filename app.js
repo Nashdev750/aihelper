@@ -36,6 +36,12 @@ app.post("/api/metadata/upload", upload.single("image"), (req, res) => {
   sendRequest(uri)
   res.json({ success: false });
 });
+// Route to upload an image
+app.post("/api/metadata/text", (req, res) => {
+  const text = req.body.text
+  sendRequestText(text)
+  res.json({ success: false });
+});
 
 
 app.get("/api/metadata/file/:filename", (req, res) => {
@@ -67,44 +73,49 @@ async function sendRequest(url) {
     const data = {
       model: "gpt-4-turbo",
       messages: [
-          { "role": "system", "content": `ANSWER ALL QUESTIONS WITH HIGH ACCURACY.
-                      here are some intructions for answering video annotation question
-                      Play the entire video once before starting.
-                      Identify the overall task objective and its key subtasks.
-
-
-                      Write the Intent Caption
-                      One concise sentence (≤25 words) in second-person imperative, using the present tense (e.g., “Pick up the red cup and place it on the shelf”). 
-                      Mention the objects, how many, their relevant and distinguishing features (color, shape, etc), starting locations.
-                      If the robot returns to the final resting position, do mention in the intent
-                      Stay neutral, descriptive, and in present tense.
-                      If the intent is clear but the robot fails (e.g., drops the cup), still write the intended task.
-                      Avoid period in the end (full stop)
-
-
-                      List the Subtasks Summary
-                      Break the task into atomic subtasks in order and list them as bullet points with hyphens - in each line.
-                      Each line must be in first-person, from the robot's perspective (“I will reach…”) and ≤15 words.
-                      Be explicit about spatial details (left/right arm, move up/down, color of object). Use the camera’s perspective for the spatial details, NOT the robot operator’s perspective.
-                      Cover the entire video sequence without skipping steps.
-                      Do not include mistakes observed in the video in the subtask list.
-
-
-                      Write the Final Summary
-                      In first-person (Robot perspective), describe what happened in the video. e.g. ("I reached for the cup, grasped it...")
-                      Note if the task was completed or not.
-                      Mention any mistakes or suboptimal actions (jerky motion, pauses, unnecessary slowness).
-                      If nothing unusual, simply restate the intent in first-person.
-
-
-                      Choose an Outcome
-                      Select an Outcome of this video based on the intent.
-                      Explain briefly but descriptively why you chose this outcome (e.g., “Robot lifted the cup but dropped it halfway, so the task was only partially completed”). 
-
-      ` },
+          { "role": "system", "content": `ANSWER ALL QUESTIONS WITH HIGH ACCURACY.` },
           { "role": "user", "content": [
               { "type": "text", "text": "Solve the question presented on the image" },
               { "type": "image_url", "image_url": { "url": url } }
+          ] }
+      ]
+  }
+  
+
+    try {
+        const response = await axios.post(openAiUrl, data, {
+            headers: {
+                'Authorization': `Bearer ${apiKey}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const answer = response.data.choices[0].message.content;
+        console.log("Answer:", answer);
+        
+        await axios.post(telegramUrl, {
+            chat_id: telegramChatId,
+            text: answer
+        });
+        
+        return answer;
+    } catch (error) {
+        console.error("Error sending request:", error.response ? error.response.data : error.message);
+    }
+}
+async function sendRequestText(text) {
+    const apiKey = process.env.OPEN_API_KEY;
+    const telegramBotToken = process.env.TOKEN;
+    const telegramChatId = process.env.TELEGRAM_CHAT_ID;
+    const openAiUrl = 'https://api.openai.com/v1/chat/completions';
+    const telegramUrl = `https://api.telegram.org/bot${telegramBotToken}/sendMessage`;
+
+    const data = {
+      model: "gpt-4-turbo",
+      messages: [
+          { "role": "system", "content": `You are a senior software developer and a solution architect so i will put you into test. ANSWER ALL QUESTIONS WITH HIGH ACCURACY WITH NONE AI ACCENT.` },
+          { "role": "user", "content": [
+              { "type": "text", "text": text }
           ] }
       ]
   }
