@@ -113,7 +113,7 @@ async function sendRequestText(text) {
     const data = {
       model: "gpt-4-turbo",
       messages: [
-          { "role": "system", "content": `You are a senior software developer and a solution architect so i will put you into test. ANSWER ALL QUESTIONS WITH HIGH ACCURACY WITH NONE AI ACCENT.` },
+          { "role": "system", "content": `You are a senior software developer and a solution architect so i will put you into test. ANSWER ALL QUESTIONS WITH HIGH ACCURACY WITH NONE AI ACCENT. BE BELIEF NO TOO LONG ANSWERS TO AVAOID WASTING TIME ON A TOPIC` },
           { "role": "user", "content": [
               { "type": "text", "text": text }
           ] }
