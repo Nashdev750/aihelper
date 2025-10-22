@@ -73,7 +73,7 @@ async function sendRequest(url) {
     const data = {
       model: "gpt-4-turbo",
       messages: [
-          { "role": "system", "content": `ANSWER ALL QUESTIONS WITH HIGH ACCURACY.` },
+          { "role": "system", "content": `You are a senior software developer and a solution architect so i will put you into test, ANSWER ALL QUESTIONS WITH HIGH ACCURACY.` },
           { "role": "user", "content": [
               { "type": "text", "text": "Solve the question presented on the image" },
               { "type": "image_url", "image_url": { "url": url } }
