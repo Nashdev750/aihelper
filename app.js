@@ -28,23 +28,23 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Route to upload an image
-app.post("/dogg/metadata/upload", upload.single("image"), (req, res) => {
+app.post("/dogg/upload", upload.single("image"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
   }
-  const uri = `https://authentify.co.ke/dogg/metadata/file/${req.file.filename}`
+  const uri = `https://authentify.co.ke/dogg/file/${req.file.filename}`
   sendRequest(uri)
   res.json({ success: false });
 });
 // Route to upload an image
-app.post("/dogg/metadata/text", (req, res) => {
+app.post("/dogg/text", (req, res) => {
   const text = req.body.text
   sendRequestText(text)
   res.json({ success: false });
 });
 
 
-app.get("/dogg/metadata/file/:filename", (req, res) => {
+app.get("/dogg/file/:filename", (req, res) => {
   const filePath = path.join(__dirname, "uploads", req.params.filename);
 
   // Check if the file exists
@@ -55,7 +55,7 @@ app.get("/dogg/metadata/file/:filename", (req, res) => {
   res.sendFile(filePath);
 });
 
-app.post("/dogg/metadata/coverletter", coverletterGen);
+app.post("/dogg/coverletter", coverletterGen);
 
 // Start the server
 app.listen(PORT, () => {
