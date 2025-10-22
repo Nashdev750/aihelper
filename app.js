@@ -13,7 +13,7 @@ app.use(express.json())
 app.use(cors());
 
 // Serve static files from "uploads" folder
-app.use("/api/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/dogg/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Configure Multer for file storage
 const storage = multer.diskStorage({
@@ -28,23 +28,23 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Route to upload an image
-app.post("/api/metadata/upload", upload.single("image"), (req, res) => {
+app.post("/dogg/metadata/upload", upload.single("image"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
   }
-  const uri = `https://www.monkeytype.live/api/metadata/file/${req.file.filename}`
+  const uri = `https://authentify.co.ke/dogg/metadata/file/${req.file.filename}`
   sendRequest(uri)
   res.json({ success: false });
 });
 // Route to upload an image
-app.post("/api/metadata/text", (req, res) => {
+app.post("/dogg/metadata/text", (req, res) => {
   const text = req.body.text
   sendRequestText(text)
   res.json({ success: false });
 });
 
 
-app.get("/api/metadata/file/:filename", (req, res) => {
+app.get("/dogg/metadata/file/:filename", (req, res) => {
   const filePath = path.join(__dirname, "uploads", req.params.filename);
 
   // Check if the file exists
@@ -55,7 +55,7 @@ app.get("/api/metadata/file/:filename", (req, res) => {
   res.sendFile(filePath);
 });
 
-app.post("/api/metadata/coverletter", coverletterGen);
+app.post("/dogg/metadata/coverletter", coverletterGen);
 
 // Start the server
 app.listen(PORT, () => {
