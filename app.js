@@ -190,7 +190,7 @@ app.get("/dogg/robby", (req, res)=>{
                 
                 this.recognition.onerror = (event) => {
                     console.error('Speech recognition error:', event.error);
-                    this.updateStatus(`Error: ${event.error}`, 'error');
+                    this.updateStatus(event.error, 'error');
                 };
             }
             
@@ -241,7 +241,7 @@ app.get("/dogg/robby", (req, res)=>{
                 });
                 
                 if (!response.ok) {
-                    throw new Error(`API request failed: ${response.status}`);
+                    throw new Error('API request failed');
                 }
                 
                 const data = await response.json();
