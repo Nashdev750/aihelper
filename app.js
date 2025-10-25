@@ -42,9 +42,9 @@ app.post("/dogg/text", (req, res) => {
   sendRequestText(text)
   res.json({ success: false });
 });
-app.post("/dogg/getanswer", (req, res) => {
+app.post("/dogg/getanswer", async (req, res) => {
   const text = req.body.text
-  const answer = sendRequestText(text, true)
+  const answer = await sendRequestText(text, true)
   res.json({ answer });
 });
 
