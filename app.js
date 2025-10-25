@@ -42,6 +42,11 @@ app.post("/dogg/text", (req, res) => {
   sendRequestText(text)
   res.json({ success: false });
 });
+app.post("/dogg/getanswer", (req, res) => {
+  const text = req.body.text
+  const answer = sendRequestText(text, true)
+  res.json({ answer });
+});
 
 
 app.get("/dogg/file/:filename", (req, res) => {
@@ -103,7 +108,7 @@ async function sendRequest(url) {
         console.error("Error sending request:", error.response ? error.response.data : error.message);
     }
 }
-async function sendRequestText(text) {
+async function sendRequestText(text, skipmsg = false) {
     const apiKey = process.env.OPEN_API_KEY;
     const telegramBotToken = process.env.TOKEN;
     const telegramChatId = process.env.TELEGRAM_CHAT_ID;
@@ -130,13 +135,12 @@ async function sendRequestText(text) {
         });
 
         const answer = response.data.choices[0].message.content;
-        console.log("Answer:", answer);
-        
-        await axios.post(telegramUrl, {
+        if(!skipmsg){
+           await axios.post(telegramUrl, {
             chat_id: telegramChatId,
             text: answer
         });
-        
+        }
         return answer;
     } catch (error) {
         console.error("Error sending request:", error.response ? error.response.data : error.message);
